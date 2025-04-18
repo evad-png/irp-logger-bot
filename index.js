@@ -1,3 +1,6 @@
+const { Client, GatewayIntentBits, Partials, Events } = require('discord.js');
+
+
 const spreadsheetId = '1qv2iIUqsLCsFbYQzSHlIkVUAH9xHaUK7nHwa7REPhcQ';
 const verificationChannelId = '1362523004155723857'; // 🔁 Replace this
 
