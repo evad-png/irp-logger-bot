@@ -9,7 +9,7 @@ const auth = new google.auth.GoogleAuth({
 });
 
 
-const spreadsheetId = '1qv2iIUqsLCsFbYQzSHlIkVUAH9xHaUK7nHwa7REPhcQ';
+const spreadsheetId = '17ik72Fnb6E0q3Ij_Gt3YQ5u1E1qkYzgaujPlhTa7UsE';
 const verificationChannelId = '1362523004155723857'; // 🔁 Replace this
 
 const client = new Client({
@@ -47,7 +47,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 
     await sheets.spreadsheets.values.append({
       spreadsheetId,
-      range: 'Sheet1!A:C',
+      range: 'Discord Logger!A:C',
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [row],
