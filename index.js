@@ -69,40 +69,48 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
     const coachCategoryId = studentRow[16]; // Column Q
 
     const baseName = tag.split('#')[0].toLowerCase();
-    const existingChannel = reaction.message.guild.channels.cache.find(c =>
-      c.name.toLowerCase().includes(baseName)
-    );
+const existingChannel = reaction.message.guild.channels.cache.find(c =>
+  c.name.toLowerCase().includes(baseName)
+);
 
-    if (existingChannel) {
-      console.log(`ℹ️ Channel already exists for ${tag}, skipping creation.`);
-      return;
+if (existingChannel) {
+  console.log(`ℹ️ Channel already exists for ${tag}, skipping creation.`);
+  return;
+}
+
+const channelName = `${baseName} - active`;
+
+// 🐛 DEBUG LOGS
+console.log("➡️ Creating channel with:");
+console.log("Student ID:", studentDiscordId, "| Type:", typeof studentDiscordId);
+console.log("Coach ID:", rawCoachId, "| Type:", typeof rawCoachId);
+console.log("Bot ID:", reaction.client.user.id, "| Type:", typeof reaction.client.user.id);
+console.log("Category ID:", coachCategoryId, "| Type:", typeof coachCategoryId);
+
+const newChannel = await reaction.message.guild.channels.create({
+  name: channelName,
+  type: 0, // GUILD_TEXT
+  parent: coachCategoryId,
+  permissionOverwrites: [
+    {
+      id: reaction.message.guild.roles.everyone,
+      deny: [PermissionsBitField.Flags.ViewChannel],
+    },
+    {
+      id: studentDiscordId,
+      allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+    },
+    {
+      id: rawCoachId,
+      allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+    },
+    {
+      id: reaction.client.user.id,
+      allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
     }
+  ],
+});
 
-    const channelName = `${baseName} - active`;
-
-    const newChannel = await reaction.message.guild.channels.create({
-      name: channelName,
-      type: 0, // GUILD_TEXT
-      parent: coachCategoryId,
-      permissionOverwrites: [
-        {
-          id: reaction.message.guild.roles.everyone,
-          deny: [PermissionsBitField.Flags.ViewChannel],
-        },
-        {
-          id: studentDiscordId,
-          allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
-        },
-        {
-          id: rawCoachId, // this is the cleaned version, just the digits
-          allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
-        },
-        {
-          id: reaction.client.user.id,
-          allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
-        }
-      ],
-    });
 
     // Send welcome message
     
