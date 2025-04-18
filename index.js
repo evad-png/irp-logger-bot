@@ -5,10 +5,12 @@ const { google } = require('googleapis');
 const path = require('path');
 
 // Google Sheets Setup
+const keyBuffer = Buffer.from(process.env.GOOGLE_CREDENTIALS_BASE64, 'base64');
 const auth = new google.auth.GoogleAuth({
-  keyFile: path.join(__dirname, 'sheets-credentials.json'), // Make sure this file is in your project folder
+  credentials: JSON.parse(keyBuffer.toString()),
   scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
+
 
 // ⬇️ Replace with your real spreadsheet ID (from the Google Sheets URL)
 const spreadsheetId = '1qv2iIUqsLCsFbYQzSHlIkVUAH9xHaUK7nHwa7REPhcQ';
