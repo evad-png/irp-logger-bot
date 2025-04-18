@@ -1,6 +1,4 @@
 const { Client, GatewayIntentBits, Partials, Events } = require('discord.js');
-
-const { Client, GatewayIntentBits, Partials, Events } = require('discord.js');
 const { google } = require('googleapis');
 
 // Google Sheets Setup
