@@ -1,5 +1,15 @@
 const { Client, GatewayIntentBits, Partials, Events } = require('discord.js');
 
+const { Client, GatewayIntentBits, Partials, Events } = require('discord.js');
+const { google } = require('googleapis');
+
+// Google Sheets Setup
+const keyBuffer = Buffer.from(process.env.GOOGLE_CREDENTIALS_BASE64, 'base64');
+const auth = new google.auth.GoogleAuth({
+  credentials: JSON.parse(keyBuffer.toString()),
+  scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+});
+
 
 const spreadsheetId = '1qv2iIUqsLCsFbYQzSHlIkVUAH9xHaUK7nHwa7REPhcQ';
 const verificationChannelId = '1362523004155723857'; // 🔁 Replace this
@@ -51,3 +61,5 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
     console.error('❌ Error logging to Google Sheets:', error.message);
   }
 });
+console.log("🚀 Bot script started...");
+client.login(process.env.DISCORD_TOKEN);
