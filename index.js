@@ -63,7 +63,9 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
     }
 
     const studentDiscordId = studentRow[2]; // Column C
-    const coachDiscordId = studentRow[14]; // Column O
+    const rawCoachId = studentRow[14].replace(/[<@>]/g, '');
+    const coachMention = studentRow[14]; // for the welcome message
+
     const coachCategoryId = studentRow[16]; // Column Q
 
     const baseName = tag.split('#')[0].toLowerCase();
@@ -92,7 +94,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
           allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
         },
         {
-          id: coachDiscordId,
+          id: rawCoachId, // this is the cleaned version, just the digits
           allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
         },
         {
