@@ -1,19 +1,5 @@
-console.log("🚀 Bot script started...");
-require('dotenv').config();
-const { Client, GatewayIntentBits, Partials, Events } = require('discord.js');
-const { google } = require('googleapis');
-const path = require('path');
-
-// Google Sheets Setup
-const keyBuffer = Buffer.from(process.env.GOOGLE_CREDENTIALS_BASE64, 'base64');
-const auth = new google.auth.GoogleAuth({
-  credentials: JSON.parse(keyBuffer.toString()),
-  scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-});
-
-
-// ⬇️ Replace with your real spreadsheet ID (from the Google Sheets URL)
 const spreadsheetId = '1qv2iIUqsLCsFbYQzSHlIkVUAH9xHaUK7nHwa7REPhcQ';
+const verificationChannelId = '1362523004155723857'; // 🔁 Replace this
 
 const client = new Client({
   intents: [
@@ -36,6 +22,9 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
     if (user.bot) return;
     if (reaction.emoji.name !== '✅') return;
 
+    // Only respond if it's in the correct channel
+    if (reaction.message.channel.id !== verificationChannelId) return;
+
     const tag = user.tag;
     const id = user.id;
     const timestamp = new Date().toISOString();
@@ -43,12 +32,11 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
     console.log(`✅ Reaction from ${tag} (${id}) at ${timestamp}`);
 
     const sheets = google.sheets({ version: 'v4', auth });
-
     const row = [tag, id, timestamp];
 
     await sheets.spreadsheets.values.append({
       spreadsheetId,
-      range: 'Sheet1!A:C', // Assumes your Google Sheet tab is named 'Sheet1'
+      range: 'Sheet1!A:C',
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [row],
@@ -60,5 +48,3 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
     console.error('❌ Error logging to Google Sheets:', error.message);
   }
 });
-
-client.login(process.env.DISCORD_TOKEN);
