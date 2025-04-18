@@ -64,58 +64,56 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 
     const studentDiscordId = studentRow[2]; // Column C
     const rawCoachId = studentRow[14].replace(/[<@>]/g, '');
-    const coachMention = studentRow[14]; // for the welcome message
-
+    const coachMention = studentRow[14]; // for welcome message
     const coachCategoryId = studentRow[16]; // Column Q
 
     const baseName = tag.split('#')[0].toLowerCase();
-const existingChannel = reaction.message.guild.channels.cache.find(c =>
-  c.name.toLowerCase().includes(baseName)
-);
+    const existingChannel = reaction.message.guild.channels.cache.find(c =>
+      c.name.toLowerCase().includes(baseName)
+    );
 
-if (existingChannel) {
-  console.log(`ℹ️ Channel already exists for ${tag}, skipping creation.`);
-  return;
-}
-
-const channelName = `${baseName} - active`;
-
-// 🐛 DEBUG LOGS
-console.log("➡️ Creating channel with:");
-console.log("Student ID:", studentDiscordId, "| Type:", typeof studentDiscordId);
-console.log("Coach ID:", rawCoachId, "| Type:", typeof rawCoachId);
-console.log("Bot ID:", reaction.client.user.id, "| Type:", typeof reaction.client.user.id);
-console.log("Category ID:", coachCategoryId, "| Type:", typeof coachCategoryId);
-
-const newChannel = await reaction.message.guild.channels.create({
-  name: channelName,
-  type: 0, // GUILD_TEXT
-  parent: coachCategoryId,
-  permissionOverwrites: [
-    {
-      id: reaction.message.guild.roles.everyone,
-      deny: [PermissionsBitField.Flags.ViewChannel],
-    },
-    {
-      id: studentDiscordId,
-      allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
-    },
-    {
-      id: rawCoachId,
-      allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
-    },
-    {
-      id: reaction.client.user.id,
-      allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+    if (existingChannel) {
+      console.log(`ℹ️ Channel already exists for ${tag}, skipping creation.`);
+      return;
     }
-  ],
-});
 
+    const channelName = `${baseName} - active`;
+
+    // ✅ Fetch coach user to avoid caching issues
+    const coachUser = await reaction.message.guild.members.fetch(rawCoachId);
+
+    console.log("➡️ Creating channel with:");
+    console.log("Student ID:", studentDiscordId, "| Type:", typeof studentDiscordId);
+    console.log("Coach ID:", coachUser.id, "| Type:", typeof coachUser.id);
+    console.log("Bot ID:", reaction.client.user.id, "| Type:", typeof reaction.client.user.id);
+    console.log("Category ID:", coachCategoryId, "| Type:", typeof coachCategoryId);
+
+    const newChannel = await reaction.message.guild.channels.create({
+      name: channelName,
+      type: 0, // GUILD_TEXT
+      parent: coachCategoryId,
+      permissionOverwrites: [
+        {
+          id: reaction.message.guild.roles.everyone,
+          deny: [PermissionsBitField.Flags.ViewChannel],
+        },
+        {
+          id: studentDiscordId,
+          allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+        },
+        {
+          id: coachUser.id, // ✅ the fetched user
+          allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+        },
+        {
+          id: reaction.client.user.id,
+          allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+        }
+      ],
+    });
 
     // Send welcome message
-    
-await newChannel.send(`🎉 Welcome <@${studentDiscordId}> to your private coaching channel with ${coachMention}!
-
+    await newChannel.send(`🎉 Welcome <@${studentDiscordId}> to your private coaching channel with ${coachMention}!
 
 This is your dedicated space to work directly with your coach — all communication should happen here, **not through DMs**. Use this channel to ask questions, request feedback, share clips, and stay on track with your goals. Your coach will always respond in this space.
 
