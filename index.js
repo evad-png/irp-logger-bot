@@ -106,7 +106,8 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 
     // Send welcome message
     
-await newChannel.send(`🎉 Welcome <@${studentDiscordId}> to your private coaching channel with ${coachDiscordId}!
+await newChannel.send(`🎉 Welcome <@${studentDiscordId}> to your private coaching channel with ${coachMention}!
+
 
 This is your dedicated space to work directly with your coach — all communication should happen here, **not through DMs**. Use this channel to ask questions, request feedback, share clips, and stay on track with your goals. Your coach will always respond in this space.
 
