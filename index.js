@@ -115,6 +115,8 @@ This is your dedicated space to work directly with your coach — all communicat
 2. 📚 Catch up on past lessons: <#1341428516415213718>
 3. 🗓 Check the Lite calendar: <#1338991610221821953>
 4. 🙋 Introduce yourself to other Lite students: <#1340712926809555014>
+5. 🖥️ **What to do the day of your assessment meeting?**  
+Join this channel: <#1336958676698923110> **5 minutes before your scheduled time** and your coach will pull you into their coaching terminal!
 
 ---
 
