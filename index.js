@@ -103,15 +103,23 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
     });
 
     // Send welcome message
-    await newChannel.send(`🎉 Welcome <@${studentDiscordId}> to your private coaching channel with <@${coachDiscordId}>!
+    
+await newChannel.send(`🎉 Welcome <@${studentDiscordId}> to your private coaching channel with ${coachDiscordId}!
 
-This is your dedicated space to work directly with your coach. **Please communicate here, not via DMs**, so we can stay organized and support you better.
+This is your dedicated space to work directly with your coach — all communication should happen here, **not through DMs**. Use this channel to ask questions, request feedback, share clips, and stay on track with your goals. Your coach will always respond in this space.
 
-✅ **Next Steps**:
-1. Complete your [Voltaic Benchmarks](https://docs.google.com/document/d/1hXSO_VrHsnJvRWA6ne1wCEaoIWdseXKX5EaWnJx6UAg/edit?usp=sharing)
-2. Catch up on past lessons: <#1341428516415213718>
-3. Check the Lite calendar: <#1338991610221821953>
-4. Introduce yourself to other Lite students: <#1340712926809555014>`);
+---
+
+✅ **Before Your Assessment Call**:
+1. 🎯 Complete your [Voltaic Benchmarks](https://docs.google.com/document/d/1hXSO_VrHsnJvRWA6ne1wCEaoIWdseXKX5EaWnJx6UAg/edit?usp=sharing)
+2. 📚 Catch up on past lessons: <#1341428516415213718>
+3. 🗓 Check the Lite calendar: <#1338991610221821953>
+4. 🙋 Introduce yourself to other Lite students: <#1340712926809555014>
+
+---
+
+Let’s get to work 💪`);
+
   } catch (error) {
     console.error('❌ Error in reaction handler:', error.message);
   }
