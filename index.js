@@ -10,6 +10,7 @@ const auth = new google.auth.GoogleAuth({
 
 const spreadsheetId = '17ik72Fnb6E0q3Ij_Gt3YQ5u1E1qkYzgaujPlhTa7UsE';
 const verificationChannelId = '1362523004155723857';
+const coachRoleId = '866700390338002944';
 
 const client = new Client({
   intents: [
@@ -90,7 +91,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 
     const newChannel = await reaction.message.guild.channels.create({
       name: channelName,
-      type: 0, // GUILD_TEXT
+      type: 0,
       parent: coachCategoryId,
       permissionOverwrites: [
         {
@@ -102,7 +103,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
           allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
         },
         {
-          id: coachUser.id, // ✅ the fetched user
+          id: coachUser.id,
           allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
         },
         {
@@ -112,7 +113,6 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
       ],
     });
 
-    // Send welcome message
     await newChannel.send(`🎉 Welcome <@${studentDiscordId}> to your private coaching channel with ${coachMention}!
 
 This is your dedicated space to work directly with your coach — all communication should happen here, **not through DMs**. Use this channel to ask questions, request feedback, share clips, and stay on track with your goals. Your coach will always respond in this space.
@@ -130,9 +130,41 @@ Join this channel: <#1336958676698923110> **5 minutes before your scheduled time
 ---
 
 Let’s get to work 💪`);
-
   } catch (error) {
     console.error('❌ Error in reaction handler:', error.message);
+  }
+});
+
+client.on(Events.MessageCreate, async (message) => {
+  try {
+    if (!message.guild || message.author.bot) return;
+    const isCoach = message.member.roles.cache.has(coachRoleId);
+    if (!isCoach) return;
+    if (!message.content.toLowerCase().startsWith('!startattendance')) return;
+
+    const args = message.content.trim().split(' ');
+    args.shift();
+    const className = args.join(' ').trim();
+
+    if (!className) {
+      await message.reply('❌ Please provide a class name like `!startattendance Duelist Masterclass`');
+      return;
+    }
+
+    const attendanceMsg = await message.channel.send(`📋 **Attendance for ${className}**\nReact with ✅ to confirm you're here.`);
+    await attendanceMsg.react('✅');
+
+    setTimeout(async () => {
+      try {
+        await attendanceMsg.delete();
+        console.log(`🗑️ Deleted attendance message for ${className}`);
+      } catch (err) {
+        console.error('⚠️ Error deleting attendance message:', err.message);
+      }
+    }, 3 * 60 * 60 * 1000);
+
+  } catch (error) {
+    console.error('❌ Error in messageCreate handler:', error.message);
   }
 });
 
