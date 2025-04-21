@@ -119,13 +119,22 @@ This is your dedicated space to work directly with your coach — all communicat
 
 ---
 
-✅ **Before Your Assessment Call**:
-1. 🎯 Complete your [Voltaic Benchmarks](https://docs.google.com/document/d/1hXSO_VrHsnJvRWA6ne1wCEaoIWdseXKX5EaWnJx6UAg/edit?usp=sharing)
-2. 📚 Catch up on past lessons: <#1341428516415213718>
-3. 🗓 Check the Lite calendar: <#1338991610221821953>
-4. 🙋 Introduce yourself to other Lite students: <#1340712926809555014>
-5. 🖥️ **What to do the day of your assessment meeting?**  
-Join this channel: <#1336958676698923110> **5 minutes before your scheduled time** and your coach will pull you into their coaching terminal!
+✅ Before Your Assessment Call:
+
+🎯 Complete your Voltaic Benchmarks
+
+🟢 Platinum or lower: https://forms.gle/oKnww1jr2GSUDiN67
+🔵 Diamond or higher: https://forms.gle/W3JbvXiAJHDrPGGF8
+📄 Instructions: https://docs.google.com/document/d/1hIImct8DrCWM9lgXZBXspNwSADcWfqT6_sxAn29nCs8/edit?usp=sharing
+
+📚 Catch up on past lessons: <#1341428516415213718>
+
+🗓 Check the Lite calendar: <#1338991610221821953>
+
+🙋 Introduce yourself to other Lite students: <#1340712926809555014>
+
+🖥️ What to do the day of your assessment meeting?
+Join this channel: <#1336958676698923110> 5 minutes before your scheduled time and your coach will pull you into their coaching terminal!
 
 ---
 
