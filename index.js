@@ -225,7 +225,7 @@ const timeOnly = now.toLocaleTimeString('en-US');     // e.g., 9:34 PM
       range: 'Attendance Logger!A:F',
       valueInputOption: 'USER_ENTERED',
       requestBody: {
-        values: [[tag, id, className, week, dateOnly, timeOnly '']],
+        values: [[tag, id, className, week, dateOnly, timeOnly, '']],
       },
     });
 
