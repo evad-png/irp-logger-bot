@@ -23,6 +23,8 @@ const client = new Client({
   partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 });
 
+const activeAttendance = {};
+
 client.once('ready', () => {
   console.log(`🤖 Logged in as ${client.user.tag}`);
 });
@@ -155,27 +157,82 @@ client.on(Events.MessageCreate, async (message) => {
     args.shift();
     const className = args.join(' ').trim();
 
-    if (!className) {
-      await message.reply('❌ Please provide a class name like `!startattendance Duelist Masterclass`');
+    if (!className.includes('| Week')) {
+      await message.reply('❌ Please include the week like `!startattendance Sentinel Masterclass | Week 4`');
       return;
     }
 
-    const attendanceMsg = await message.channel.send(`📋 **Attendance for ${className}**\nReact with ✅ to confirm you're here.`);
+    const [rawClass, rawWeek] = className.split('| Week');
+    const parsedClassName = rawClass.trim();
+    const currentWeek = parseInt(rawWeek.trim());
+
+    if (!parsedClassName || isNaN(currentWeek)) {
+      await message.reply('❌ Invalid format. Use `!startattendance Sentinel Masterclass | Week 4`');
+      return;
+    }
+
+    const attendanceMsg = await message.channel.send(`📋 **Attendance for ${parsedClassName} (Week ${currentWeek})**\nReact with ✅ to confirm you're here.`);
     await attendanceMsg.react('✅');
 
+    // ✅ Store the attendance session
+    activeAttendance[attendanceMsg.id] = {
+      messageId: attendanceMsg.id,
+      channelId: attendanceMsg.channel.id,
+      week: currentWeek,
+      className: parsedClassName,
+      startTime: Date.now()
+    };
+
+    // ⏳ Auto-delete the message after 1 hour (3600000 ms)
     setTimeout(async () => {
       try {
         await attendanceMsg.delete();
-        console.log(`🗑️ Deleted attendance message for ${className}`);
+        console.log(`🗑️ Deleted attendance message for ${parsedClassName}`);
+        delete activeAttendance[attendanceMsg.id];
       } catch (err) {
         console.error('⚠️ Error deleting attendance message:', err.message);
       }
-    }, 3 * 60 * 60 * 1000);
+    }, 60 * 60 * 1000); // 1 hour
 
   } catch (error) {
     console.error('❌ Error in messageCreate handler:', error.message);
   }
 });
+
+client.on(Events.MessageReactionAdd, async (reaction, user) => {
+  try {
+    if (reaction.partial) await reaction.fetch();
+    if (user.bot || reaction.emoji.name !== '✅') return;
+
+    const attendanceInfo = Object.values(activeAttendance).find(
+      (entry) => entry.messageId === reaction.message.id
+    );
+
+    if (!attendanceInfo) return;
+
+    const { className, week } = attendanceInfo;
+    const tag = user.tag;
+    const id = user.id;
+    const timestamp = new Date().toISOString();
+
+    const sheets = google.sheets({ version: 'v4', auth });
+
+    await sheets.spreadsheets.values.append({
+      spreadsheetId,
+      range: 'Attendance Logger!A:F',
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [[timestamp, className, week, tag, id, '']],
+      },
+    });
+
+    console.log(`✅ Logged attendance for ${tag} (${id}) - ${className} Week ${week}`);
+  } catch (err) {
+    console.error('❌ Error tracking attendance reaction:', err.message);
+  }
+});
+
+
 
 console.log("🚀 Bot script started...");
 client.login(process.env.DISCORD_TOKEN);
