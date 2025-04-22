@@ -213,7 +213,10 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
     const { className, week } = attendanceInfo;
     const tag = user.tag;
     const id = user.id;
-    const timestamp = new Date().toISOString();
+    const now = new Date();
+const dateOnly = now.toLocaleDateString('en-US');     // e.g., 4/21/2025
+const timeOnly = now.toLocaleTimeString('en-US');     // e.g., 9:34 PM
+
 
     const sheets = google.sheets({ version: 'v4', auth });
 
@@ -222,7 +225,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
       range: 'Attendance Logger!A:F',
       valueInputOption: 'USER_ENTERED',
       requestBody: {
-        values: [[timestamp, className, week, tag, id, '']],
+        values: [[tag, id, className, week, dateOnly, timeOnly '']],
       },
     });
 
