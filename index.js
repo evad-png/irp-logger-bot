@@ -213,34 +213,41 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
     const { className, week } = attendanceInfo;
     const tag = user.tag;
     const id = user.id;
+
+    // Convert to EST
     const date = new Date();
-const dateOnly = date.toLocaleDateString('en-US');
-const timeOnly = date.toLocaleTimeString('en-US');
+    const estOptions = {
+      timeZone: 'America/New_York',
+      hour12: true,
+    };
+    const dateOnly = date.toLocaleDateString('en-US', estOptions); // MM/DD/YYYY
+    const timeOnly = date.toLocaleTimeString('en-US', estOptions); // HH:MM:SS AM/PM
 
-// Reordered values for Attendance Logger
-await sheets.spreadsheets.values.append({
-  spreadsheetId,
-  range: 'Attendance Logger!A:G',
-  valueInputOption: 'USER_ENTERED',
-  requestBody: {
-    values: [[
-      dateOnly,         // Column A - Date
-      className,        // Column B - Class Name
-      week,             // Column C - Week
-      tag,              // Column D - Discord Tag
-      id,               // Column E - Discord ID
-      timeOnly,         // Column F - Timestamp
-      ''                // Column G - Sync Status
-    ]],
-  },
-});
+    const sheets = google.sheets({ version: 'v4', auth });
 
+    await sheets.spreadsheets.values.append({
+      spreadsheetId,
+      range: 'Attendance Logger!A:G',
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [[
+          dateOnly,       // Column A - Date
+          className,      // Column B - Class Name
+          week,           // Column C - Week
+          tag,            // Column D - Discord Tag
+          id,             // Column E - Discord ID
+          timeOnly,       // Column F - Timestamp
+          ''              // Column G - Sync Status
+        ]],
+      },
+    });
 
     console.log(`✅ Logged attendance for ${tag} (${id}) - ${className} Week ${week}`);
   } catch (err) {
     console.error('❌ Error tracking attendance reaction:', err.message);
   }
 });
+
 
 
 
