@@ -213,21 +213,28 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
     const { className, week } = attendanceInfo;
     const tag = user.tag;
     const id = user.id;
-    const now = new Date();
-const dateOnly = now.toLocaleDateString('en-US');     // e.g., 4/21/2025
-const timeOnly = now.toLocaleTimeString('en-US');     // e.g., 9:34 PM
+    const date = new Date();
+const dateOnly = date.toLocaleDateString('en-US');
+const timeOnly = date.toLocaleTimeString('en-US');
 
+// Reordered values for Attendance Logger
+await sheets.spreadsheets.values.append({
+  spreadsheetId,
+  range: 'Attendance Logger!A:G',
+  valueInputOption: 'USER_ENTERED',
+  requestBody: {
+    values: [[
+      dateOnly,         // Column A - Date
+      className,        // Column B - Class Name
+      week,             // Column C - Week
+      tag,              // Column D - Discord Tag
+      id,               // Column E - Discord ID
+      timeOnly,         // Column F - Timestamp
+      ''                // Column G - Sync Status
+    ]],
+  },
+});
 
-    const sheets = google.sheets({ version: 'v4', auth });
-
-    await sheets.spreadsheets.values.append({
-      spreadsheetId,
-      range: 'Attendance Logger!A:F',
-      valueInputOption: 'USER_ENTERED',
-      requestBody: {
-        values: [[tag, id, className, week, dateOnly, timeOnly, '']],
-      },
-    });
 
     console.log(`✅ Logged attendance for ${tag} (${id}) - ${className} Week ${week}`);
   } catch (err) {
