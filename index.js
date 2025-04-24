@@ -171,10 +171,12 @@ client.on(Events.MessageCreate, async (message) => {
       return;
     }
 
-    const attendanceMsg = await message.channel.send(`📋 **Attendance for ${parsedClassName} (Week ${currentWeek})**\nReact with ✅ to confirm you're here.`);
+    const attendanceMsg = await message.channel.send(
+      `📋 **Attendance for ${parsedClassName} (Week ${currentWeek})**\nReact with ✅ to confirm you're here.`
+    );
     await attendanceMsg.react('✅');
 
-    // ✅ Store the attendance session
+    // Store attendance session
     activeAttendance[attendanceMsg.id] = {
       messageId: attendanceMsg.id,
       channelId: attendanceMsg.channel.id,
@@ -183,14 +185,61 @@ client.on(Events.MessageCreate, async (message) => {
       startTime: Date.now()
     };
 
-    // ⏳ Auto-delete the message after 1 hour (3600000 ms)
+    // Wait 1 hour, then log all reactions
     setTimeout(async () => {
       try {
-        await attendanceMsg.delete();
-        console.log(`🗑️ Deleted attendance message for ${parsedClassName}`);
-        delete activeAttendance[attendanceMsg.id];
+        const channel = await client.channels.fetch(attendanceMsg.channel.id);
+        const fetchedMsg = await channel.messages.fetch(attendanceMsg.id);
+        const reaction = fetchedMsg.reactions.cache.get("✅");
+        if (!reaction) {
+          console.log(`⚠️ No ✅ reactions found for ${parsedClassName}`);
+          return;
+        }
+
+        const users = await reaction.users.fetch();
+        const values = [];
+
+        const now = new Date();
+        const estOptions = {
+          timeZone: 'America/New_York',
+          hour12: true,
+        };
+        const dateOnly = now.toLocaleDateString('en-US', estOptions);
+        const timeOnly = now.toLocaleTimeString('en-US', estOptions);
+
+        users.forEach((user) => {
+          if (user.bot) return;
+
+          values.push([
+            dateOnly,                   // Column A - Date
+            parsedClassName,           // Column B - Class Name
+            currentWeek,               // Column C - Week
+            user.tag,                  // Column D - Discord Tag
+            user.id,                   // Column E - Discord ID
+            timeOnly,                  // Column F - Time
+            ''                         // Column G - Sync Status
+          ]);
+        });
+
+        if (values.length > 0) {
+          const sheets = google.sheets({ version: 'v4', auth });
+
+          await sheets.spreadsheets.values.append({
+            spreadsheetId,
+            range: 'Attendance Logger!A:G',
+            valueInputOption: 'USER_ENTERED',
+            requestBody: { values },
+          });
+
+          console.log(`✅ Logged ${values.length} students for ${parsedClassName} Week ${currentWeek}`);
+        } else {
+          console.log(`⚠️ No students reacted to ${parsedClassName}`);
+        }
+
+        await fetchedMsg.delete();
+        delete activeAttendance[fetchedMsg.id];
       } catch (err) {
-        console.error('⚠️ Error deleting attendance message:', err.message);
+        console.error('⚠️ Error finalizing attendance message:', err.message);
       }
     }, 60 * 60 * 1000); // 1 hour
 
@@ -199,54 +248,6 @@ client.on(Events.MessageCreate, async (message) => {
   }
 });
 
-client.on(Events.MessageReactionAdd, async (reaction, user) => {
-  try {
-    if (reaction.partial) await reaction.fetch();
-    if (user.bot || reaction.emoji.name !== '✅') return;
-
-    const attendanceInfo = Object.values(activeAttendance).find(
-      (entry) => entry.messageId === reaction.message.id
-    );
-
-    if (!attendanceInfo) return;
-
-    const { className, week } = attendanceInfo;
-    const tag = user.tag;
-    const id = user.id;
-
-    // Convert to EST
-    const date = new Date();
-    const estOptions = {
-      timeZone: 'America/New_York',
-      hour12: true,
-    };
-    const dateOnly = date.toLocaleDateString('en-US', estOptions); // MM/DD/YYYY
-    const timeOnly = date.toLocaleTimeString('en-US', estOptions); // HH:MM:SS AM/PM
-
-    const sheets = google.sheets({ version: 'v4', auth });
-
-    await sheets.spreadsheets.values.append({
-      spreadsheetId,
-      range: 'Attendance Logger!A:G',
-      valueInputOption: 'USER_ENTERED',
-      requestBody: {
-        values: [[
-          dateOnly,       // Column A - Date
-          className,      // Column B - Class Name
-          week,           // Column C - Week
-          tag,            // Column D - Discord Tag
-          id,             // Column E - Discord ID
-          timeOnly,       // Column F - Timestamp
-          ''              // Column G - Sync Status
-        ]],
-      },
-    });
-
-    console.log(`✅ Logged attendance for ${tag} (${id}) - ${className} Week ${week}`);
-  } catch (err) {
-    console.error('❌ Error tracking attendance reaction:', err.message);
-  }
-});
 
 
 
