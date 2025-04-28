@@ -71,51 +71,81 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
     const coachCategoryId = studentRow[16]; // Column Q
 
     const baseName = tag.split('#')[0].toLowerCase();
-    const existingChannel = reaction.message.guild.channels.cache.find(c =>
-      c.name.toLowerCase().includes(baseName)
-    );
+const existingChannel = reaction.message.guild.channels.cache.find(c =>
+  c.name.toLowerCase().includes(baseName)
+);
 
-    if (existingChannel) {
-      console.log(`ℹ️ Channel already exists for ${tag}, skipping creation.`);
-      return;
-    }
+if (existingChannel) {
+  console.log(`ℹ️ Channel already exists for ${tag}, skipping creation.`);
+  return;
+}
 
-    const channelName = `${baseName} - active`;
+const channelName = `${baseName} - active`;
 
-    // ✅ Fetch coach user to avoid caching issues
-    const coachUser = await reaction.message.guild.members.fetch(rawCoachId);
+const communityCategoryId = "1366422592537362573"; // Replace this!
+const isCommunityAccess = coachCategoryId === communityCategoryId;
 
-    console.log("➡️ Creating channel with:");
-    console.log("Student ID:", studentDiscordId, "| Type:", typeof studentDiscordId);
-    console.log("Coach ID:", coachUser.id, "| Type:", typeof coachUser.id);
-    console.log("Bot ID:", reaction.client.user.id, "| Type:", typeof reaction.client.user.id);
-    console.log("Category ID:", coachCategoryId, "| Type:", typeof coachCategoryId);
+// Use coachUser only if not Community Access
+let coachUser;
+if (!isCommunityAccess) {
+  coachUser = await reaction.message.guild.members.fetch(rawCoachId);
+}
 
-    const newChannel = await reaction.message.guild.channels.create({
-      name: channelName,
-      type: 0,
-      parent: coachCategoryId,
-      permissionOverwrites: [
-        {
-          id: reaction.message.guild.roles.everyone,
-          deny: [PermissionsBitField.Flags.ViewChannel],
-        },
-        {
-          id: studentDiscordId,
-          allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
-        },
-        {
-          id: coachUser.id,
-          allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
-        },
-        {
-          id: reaction.client.user.id,
-          allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
-        }
-      ],
-    });
+// Log what's about to happen
+console.log("➡️ Creating channel with:");
+console.log("Student ID:", studentDiscordId);
+console.log("Category ID:", coachCategoryId);
+console.log("Community Access:", isCommunityAccess);
 
-    await newChannel.send(`🎉 Welcome <@${studentDiscordId}> to your private coaching channel with ${coachMention}!
+// Permissions setup
+const permissionOverwrites = [
+  {
+    id: reaction.message.guild.roles.everyone,
+    deny: [PermissionsBitField.Flags.ViewChannel],
+  },
+  {
+    id: studentDiscordId,
+    allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+  },
+  isCommunityAccess
+    ? {
+        id: coachRoleId,
+        allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+      }
+    : {
+        id: coachUser.id,
+        allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+      },
+  {
+    id: reaction.client.user.id,
+    allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+  }
+];
+
+const newChannel = await reaction.message.guild.channels.create({
+  name: channelName,
+  type: 0,
+  parent: coachCategoryId,
+  permissionOverwrites,
+});
+
+// Custom welcome message logic
+const welcomeMessage = isCommunityAccess
+  ? `👋 Welcome <@${studentDiscordId}>! This is your personal **Community Access** space inside IRP.
+
+Use this channel to:
+- Ask questions about agents, maps, or mechanics
+- Share clips or ask for feedback from our coaching team
+- Stay connected with the IRP community
+
+Remember, Community Access does **not** receive any 1-on-1 coaching and no coach is assigned to you or this channel. All coaches have the ability to see your channel and will drop in from time to time and answer any questions. 
+
+If you'd like to upgrade so you can receive 1-on-1 coaching please DM evaD. 
+
+🗓 Check the calendar: <#1338991610221821953>  
+📚 Watch lesson recordings: <#1341428516415213718>  
+💬 Say hi in the community chat: <#1340712926809555014>`
+  : `🎉 Welcome <@${studentDiscordId}> to your private coaching channel with ${coachMention}!
 
 This is your dedicated space to work directly with your coach — all communication should happen here, **not through DMs**. Use this channel to ask questions, request feedback, share clips, and stay on track with your goals. Your coach will always respond in this space.
 
@@ -125,22 +155,22 @@ This is your dedicated space to work directly with your coach — all communicat
 
 🎯 Complete your Voltaic Benchmarks
 
-🟢 Platinum or lower: https://forms.gle/oKnww1jr2GSUDiN67
-🔵 Diamond or higher: https://forms.gle/W3JbvXiAJHDrPGGF8
+🟢 Platinum or lower: https://forms.gle/oKnww1jr2GSUDiN67  
+🔵 Diamond or higher: https://forms.gle/W3JbvXiAJHDrPGGF8  
 📄 Instructions: https://docs.google.com/document/d/1hIImct8DrCWM9lgXZBXspNwSADcWfqT6_sxAn29nCs8/edit?usp=sharing
 
-📚 Catch up on past lessons: <#1341428516415213718>
-
-🗓 Check the Lite calendar: <#1338991610221821953>
-
-🙋 Introduce yourself to other Lite students: <#1340712926809555014>
-
-🖥️ What to do the day of your assessment meeting?
+📚 Catch up on past lessons: <#1341428516415213718>  
+🗓 Check the Lite calendar: <#1338991610221821953>  
+🙋 Introduce yourself to other Lite students: <#1340712926809555014>  
+🖥️ What to do the day of your assessment meeting?  
 Join this channel: <#1336958676698923110> 5 minutes before your scheduled time and your coach will pull you into their coaching terminal!
 
 ---
 
-Let’s get to work 💪`);
+Let’s get to work 💪`;
+
+await newChannel.send(welcomeMessage);
+
   } catch (error) {
     console.error('❌ Error in reaction handler:', error.message);
   }
