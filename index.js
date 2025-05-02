@@ -151,17 +151,9 @@ const welcomeMessage = isCommunityAccess
   ? `👋 Welcome <@${studentDiscordId}>! This is your personal **Community Access** space inside IRP.
 
 Use this channel to:
-- Ask questions about agents, maps, mechanics, your Voltaic benchmarks, and more! 
+- Ask questions about agents, maps, mechanics, IRP Lite as a whole, and more! 
 - Share clips or ask for feedback from our coaching team
 - Stay connected with the IRP community
-
-
-Next Steps: 
-🎯 Complete your Voltaic Benchmarks
-
-🟢 Platinum or lower: https://forms.gle/oKnww1jr2GSUDiN67  
-🔵 Diamond or higher: https://forms.gle/W3JbvXiAJHDrPGGF8  
-📄 Instructions: https://docs.google.com/document/d/1hIImct8DrCWM9lgXZBXspNwSADcWfqT6_sxAn29nCs8/edit?usp=sharing
 
 Remember, Community Access does **not** receive 1-on-1 coaching. All coaches can see your channel and will drop in to answer any questions. 
 
