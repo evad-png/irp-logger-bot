@@ -82,12 +82,13 @@ if (!studentRow[14] || !studentRow[16]) {
   return;
 }
 
-    const studentDiscordId = studentRow[2]; // Column C
-    const rawCoachId = studentRow[14].replace(/[<@>]/g, '');
-    const coachMention = studentRow[14]; // for welcome message
-    const coachCategoryId = studentRow[16]; // Column Q
+const studentDiscordId = studentRow[2]; // Column C
+const packageType = studentRow[10]; // Column K
+const rawCoachId = studentRow[14]?.replace(/[<@>]/g, '');
+const coachMention = studentRow[14]; // for welcome message
+const coachCategoryId = studentRow[16]; // Column Q
 
-    const baseName = tag.split('#')[0].toLowerCase();
+const baseName = tag.split('#')[0].toLowerCase();
 const existingChannel = reaction.message.guild.channels.cache.find(c =>
   c.name.toLowerCase().includes(baseName)
 );
@@ -98,23 +99,20 @@ if (existingChannel) {
 }
 
 const channelName = `${baseName} - active`;
-
-const communityCategoryId = "1366422592537362573"; // Replace this!
-const isCommunityAccess = coachCategoryId === communityCategoryId;
+const communityCategoryId = "1366422592537362573"; // your Community Access category ID
+const isCommunityAccess = packageType === "Community Access";
 
 // Use coachUser only if not Community Access
 let coachUser;
-if (!isCommunityAccess) {
+if (!isCommunityAccess && rawCoachId) {
   coachUser = await reaction.message.guild.members.fetch(rawCoachId);
 }
 
-// Log what's about to happen
 console.log("➡️ Creating channel with:");
 console.log("Student ID:", studentDiscordId);
 console.log("Category ID:", coachCategoryId);
 console.log("Community Access:", isCommunityAccess);
 
-// Permissions setup
 const permissionOverwrites = [
   {
     id: reaction.message.guild.roles.everyone,
@@ -126,7 +124,7 @@ const permissionOverwrites = [
   },
   isCommunityAccess
     ? {
-        id: coachRoleId,
+        id: coachRoleId, // Allows *all* coaches to view Community Access channels
         allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
       }
     : {
@@ -145,6 +143,7 @@ const newChannel = await reaction.message.guild.channels.create({
   parent: coachCategoryId,
   permissionOverwrites,
 });
+
 
 // Custom welcome message logic
 const welcomeMessage = isCommunityAccess
