@@ -58,7 +58,8 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
     });
 
     const rows = sheetRes.data.values;
-    const studentRow = rows.find(row => row[1] === tag); // Column B = Discord Tag
+    const studentRow = rows.find(row => row[2] === id) // Column C = Discord ID
+  || rows.find(row => row[1]?.toLowerCase() === tag.toLowerCase()); // Fallback: Column B = Discord Tag
 
  if (!studentRow) {
       console.log(`❌ No matching student found in IRP Lite sheet for ${tag}`);
