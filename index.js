@@ -105,7 +105,7 @@ if (existingChannel) {
 
 const channelName = `${baseName} - active`;
 const communityCategoryId = "1366422592537362573"; // your Community Access category ID
-const isCommunityAccess = packageType === "Community Access";
+isCommunityAccess = packageType === "Community Access";
 
 // Use coachUser only if not Community Access
 let coachUser;
