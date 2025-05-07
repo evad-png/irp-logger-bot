@@ -66,7 +66,11 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
       return;
     }
 
-if (!studentRow[14] || !studentRow[16]) {
+const packageType = studentRow[10]; // Column K
+const isCommunityAccess = packageType === "Community Access";
+
+if ((!studentRow[14] || !studentRow[16]) && !isCommunityAccess) {
+
   console.log(`🛑 Coach or category not assigned yet for ${tag}. Skipping channel creation.`);
 
   const announcementChannelId = '1340712926809555014'; // #irp-lite-chat
