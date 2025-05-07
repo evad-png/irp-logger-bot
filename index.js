@@ -69,8 +69,8 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 const packageType = studentRow[10]; // Column K
 const isCommunityAccess = packageType === "Community Access";
 
+// Skip only if coach/category are missing AND it's not a Community Access student
 if ((!studentRow[14] || !studentRow[16]) && !isCommunityAccess) {
-
   console.log(`🛑 Coach or category not assigned yet for ${tag}. Skipping channel creation.`);
 
   const announcementChannelId = '1340712926809555014'; // #irp-lite-chat
@@ -81,11 +81,12 @@ if ((!studentRow[14] || !studentRow[16]) && !isCommunityAccess) {
       `👋 <@${user.id}> We're still assigning your coach! Please wait 2–3 minutes and react again with ✅, and your private channel will be created. (You need to unreact the ✅ and then react again with ✅ so it logs you again)`
     );
   } else {
-    console.log('⚠️ Could not find #irp-lite-chat to notify student.');
+  console.log('⚠️ Could not find #irp-lite-chat to notify student.');
   }
 
   return;
 }
+
 
 const studentDiscordId = studentRow[2]; // Column C
 const packageType = studentRow[10]; // Column K
