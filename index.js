@@ -89,7 +89,6 @@ if ((!studentRow[14] || !studentRow[16]) && !isCommunityAccess) {
 
 
 const studentDiscordId = studentRow[2]; // Column C
-const packageType = studentRow[10]; // Column K
 const rawCoachId = studentRow[14]?.replace(/[<@>]/g, '');
 const coachMention = studentRow[14]; // for welcome message
 const coachCategoryId = studentRow[16]; // Column Q
