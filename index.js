@@ -36,7 +36,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
     if (reaction.emoji.name !== '✅') return;
     if (reaction.message.channel.id !== verificationChannelId) return;
 
-    const tag = user.tag;
+    const tag = user.username; // safer match
     const id = user.id;
     const timestamp = new Date().toISOString();
     const sheets = google.sheets({ version: 'v4', auth });
@@ -58,100 +58,103 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
     });
 
     const rows = sheetRes.data.values;
-    const studentRow = rows.find(row => row[2] === id) // Column C = Discord ID
-  || rows.find(row => row[1]?.toLowerCase() === tag.toLowerCase()); // Fallback: Column B = Discord Tag
 
- if (!studentRow) {
-      console.log(`❌ No matching student found in IRP Lite sheet for ${tag}`);
+    const studentRow = rows.find(row => row[2]?.toString().trim() === id)
+      || rows.find(row => row[1]?.toLowerCase().trim() === tag.toLowerCase().trim());
+
+    if (!studentRow) {
+      console.log(`❌ No matching student found in IRP Lite sheet for tag: "${tag}", id: "${id}"`);
+      console.log('🧪 Sample sheet row for reference:', rows.find(r => r[1]?.toLowerCase().includes(tag.toLowerCase())) || rows[0]);
       return;
     }
 
-const packageType = studentRow[10]; // Column K
-const isCommunityAccess = packageType === "Community Access";
+    const packageType = studentRow[10]; // Column K
+    const isCommunityAccess = packageType === "Community Access";
 
-// Skip only if coach/category are missing AND it's not a Community Access student
-if ((!studentRow[14] || !studentRow[16]) && !isCommunityAccess) {
-  console.log(`🛑 Coach or category not assigned yet for ${tag}. Skipping channel creation.`);
+    // Skip only if coach/category are missing AND it's not a Community Access student
+    if ((!studentRow[14] || !studentRow[16]) && !isCommunityAccess) {
+      console.log(`🛑 Coach or category not assigned yet for ${tag}. Skipping channel creation.`);
 
-  const announcementChannelId = '1340712926809555014'; // #irp-lite-chat
-  const announcementChannel = reaction.message.guild.channels.cache.get(announcementChannelId);
+      const announcementChannelId = '1340712926809555014'; // #irp-lite-chat
+      const announcementChannel = reaction.message.guild.channels.cache.get(announcementChannelId);
 
-  if (announcementChannel) {
-    await announcementChannel.send(
-      `👋 <@${user.id}> We're still assigning your coach! Please wait 2–3 minutes and react again with ✅, and your private channel will be created. (You need to unreact the ✅ and then react again with ✅ so it logs you again)`
-    );
-  } else {
-  console.log('⚠️ Could not find #irp-lite-chat to notify student.');
-  }
-
-  return;
-}
-
-
-const studentDiscordId = studentRow[2]; // Column C
-const rawCoachId = studentRow[14]?.replace(/[<@>]/g, '');
-const coachMention = studentRow[14]; // for welcome message
-const coachCategoryId = studentRow[16]; // Column Q
-
-const baseName = tag.split('#')[0].toLowerCase();
-const existingChannel = reaction.message.guild.channels.cache.find(c =>
-  c.name.toLowerCase().includes(baseName)
-);
-
-if (existingChannel) {
-  console.log(`ℹ️ Channel already exists for ${tag}, skipping creation.`);
-  return;
-}
-
-const channelName = `${baseName} - active`;
-const communityCategoryId = "1366422592537362573"; // your Community Access category ID
-
-// Use coachUser only if not Community Access
-let coachUser;
-if (!isCommunityAccess && rawCoachId) {
-  coachUser = await reaction.message.guild.members.fetch(rawCoachId);
-}
-
-console.log("➡️ Creating channel with:");
-console.log("Student ID:", studentDiscordId);
-console.log("Category ID:", coachCategoryId);
-console.log("Community Access:", isCommunityAccess);
-
-const permissionOverwrites = [
-  {
-    id: reaction.message.guild.roles.everyone,
-    deny: [PermissionsBitField.Flags.ViewChannel],
-  },
-  {
-    id: studentDiscordId,
-    allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
-  },
-  isCommunityAccess
-    ? {
-        id: coachRoleId, // Allows *all* coaches to view Community Access channels
-        allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+      if (announcementChannel) {
+        await announcementChannel.send(
+          `👋 <@${user.id}> We're still assigning your coach! Please wait 2–3 minutes and react again with ✅, and your private channel will be created. (You need to unreact the ✅ and then react again with ✅ so it logs you again)`
+        );
+      } else {
+        console.log('⚠️ Could not find #irp-lite-chat to notify student.');
       }
-    : {
-        id: coachUser.id,
+
+      return;
+    }
+
+    const studentDiscordId = studentRow[2]; // Column C
+    const rawCoachId = studentRow[14]?.replace(/[<@>]/g, '');
+    const coachMention = studentRow[14]; // for welcome message
+    const coachCategoryId = studentRow[16]; // Column Q
+
+    const baseName = tag.toLowerCase();
+    const existingChannel = reaction.message.guild.channels.cache.find(c =>
+      c.name.toLowerCase().includes(baseName)
+    );
+
+    if (existingChannel) {
+      console.log(`ℹ️ Channel already exists for ${tag}, skipping creation.`);
+      return;
+    }
+
+    const channelName = `${baseName} - active`;
+
+    // Use coachUser only if not Community Access
+    let coachUser;
+    if (!isCommunityAccess && rawCoachId) {
+      try {
+        coachUser = await reaction.message.guild.members.fetch(rawCoachId);
+      } catch (e) {
+        console.log(`⚠️ Failed to fetch coach user for ${tag}: ${e.message}`);
+      }
+    }
+
+    console.log("➡️ Creating channel with:");
+    console.log("Student ID:", studentDiscordId);
+    console.log("Category ID:", coachCategoryId);
+    console.log("Community Access:", isCommunityAccess);
+
+    const permissionOverwrites = [
+      {
+        id: reaction.message.guild.roles.everyone,
+        deny: [PermissionsBitField.Flags.ViewChannel],
+      },
+      {
+        id: studentDiscordId,
         allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
       },
-  {
-    id: reaction.client.user.id,
-    allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
-  }
-];
+      isCommunityAccess
+        ? {
+            id: coachRoleId, // all coaches can see Community Access
+            allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+          }
+        : {
+            id: coachUser?.id,
+            allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+          },
+      {
+        id: reaction.client.user.id,
+        allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+      }
+    ];
 
-const newChannel = await reaction.message.guild.channels.create({
-  name: channelName,
-  type: 0,
-  parent: coachCategoryId,
-  permissionOverwrites,
-});
+    const newChannel = await reaction.message.guild.channels.create({
+      name: channelName,
+      type: 0,
+      parent: coachCategoryId,
+      permissionOverwrites,
+    });
 
-
-// Custom welcome message logic
-const welcomeMessage = isCommunityAccess
-  ? `👋 Welcome <@${studentDiscordId}>! This is your personal **Community Access** space inside IRP.
+    // Custom welcome message logic
+    const welcomeMessage = isCommunityAccess
+      ? `👋 Welcome <@${studentDiscordId}>! This is your personal **Community Access** space inside IRP.
 
 Use this channel to:
 - Ask questions about agents, maps, mechanics, IRP Lite as a whole, and more! 
@@ -165,7 +168,7 @@ If you'd like to upgrade so you can receive 1-on-1 coaching please DM evaD.
 🗓 Check the calendar: <#1338991610221821953>  
 📚 Watch lesson recordings: <#1341428516415213718>  
 💬 Say hi in the community chat: <#1340712926809555014>`
-  : `🎉 Welcome <@${studentDiscordId}> to your private coaching channel with ${coachMention}!
+      : `🎉 Welcome <@${studentDiscordId}> to your private coaching channel with ${coachMention}!
 
 This is your dedicated space to work directly with your coach — all communication should happen here, **not through DMs**. Use this channel to ask questions, request feedback, share clips, and stay on track with your goals. Your coach will always respond in this space.
 
@@ -182,6 +185,7 @@ This is your dedicated space to work directly with your coach — all communicat
 📚 Catch up on past lessons: <#1341428516415213718>  
 🗓 Check the Lite calendar: <#1338991610221821953>  
 🙋 Introduce yourself to other Lite students: <#1340712926809555014>  
+
 🖥️ What to do the day of your assessment meeting?  
 Join this channel: <#1336958676698923110> 5 minutes before your scheduled time and your coach will pull you into their coaching terminal!
 
@@ -189,12 +193,13 @@ Join this channel: <#1336958676698923110> 5 minutes before your scheduled time a
 
 Let’s get to work 💪`;
 
-await newChannel.send(welcomeMessage);
+    await newChannel.send(welcomeMessage);
 
   } catch (error) {
     console.error('❌ Error in reaction handler:', error.message);
   }
 });
+
 
 client.on(Events.MessageCreate, async (message) => {
   try {
