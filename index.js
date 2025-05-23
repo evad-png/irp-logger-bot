@@ -28,7 +28,28 @@ const activeAttendance = {};
 client.once('ready', () => {
   console.log(`🤖 Logged in as ${client.user.tag}`);
 });
+client.on(Events.MessageCreate, async (message) => {
+  if (message.content === '!postverify' && message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+    const verifyChannelId = '1362523004155723857';
+    const verifyChannel = await client.channels.fetch(verifyChannelId);
 
+    if (!verifyChannel) {
+      console.log('❌ Could not find verification channel');
+      return;
+    }
+
+    const verifyMessage = await verifyChannel.send(
+      `👋 **Welcome to IRP Lite!**
+
+To begin your setup, please click ✅ below to confirm you're ready.
+This helps us set up your private channel and complete your onboarding.
+**(DO NOT REACT UNLESS YOU'VE COMPLETED THE GOOGLE FORM THAT WAS INCLUDED IN YOUR WELCOME MESSAGE)**`
+    );
+
+    await verifyMessage.react('✅');
+    console.log('✅ Posted verification message with ✅');
+  }
+});
 client.on(Events.MessageReactionAdd, async (reaction, user) => {
   try {
     if (reaction.partial) await reaction.fetch();
