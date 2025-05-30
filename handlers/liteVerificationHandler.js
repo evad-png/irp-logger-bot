@@ -48,13 +48,7 @@ module.exports = (client, auth, spreadsheetId) => {
       const isCommunityAccess = packageType === "Community Access";
 
       if ((!studentRow[14] || !studentRow[16]) && !isCommunityAccess) {
-        console.log(`🛑 Coach or category not assigned yet for ${tag}. Skipping channel creation.`);
-        const announcementChannel = reaction.message.guild.channels.cache.get('1340712926809555014');
-        if (announcementChannel) {
-          await announcementChannel.send(
-            `👋 <@${user.id}> We're still assigning your coach! Please wait 2–3 minutes and react again with ✅.`
-          );
-        }
+        console.log(`🕒 Coach/category not ready for ${tag}. Your private channel will be created in the next 5 minutes. If your channel does not get created please DM evaD`);
         return;
       }
 

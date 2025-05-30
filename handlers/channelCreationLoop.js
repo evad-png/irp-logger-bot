@@ -136,5 +136,5 @@ Let’s get to work 💪`;
         console.error(`❌ Error creating channel for ${discordTag}:`, err.message);
       }
     }
-  }, 1 * 60 * 1000); // 5 minutes
+  }, 5 * 60 * 1000); // 5 minutes
 };
