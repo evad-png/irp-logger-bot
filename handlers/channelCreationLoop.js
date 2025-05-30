@@ -60,27 +60,33 @@ module.exports = function startChannelCheckLoop(client, auth, spreadsheetId) {
   {
     id: guild.roles.everyone.id,
     deny: [PermissionsBitField.Flags.ViewChannel],
+    type: 'role',
   },
   {
     id: discordId,
     allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+    type: 'member',
   },
   isCommunityAccess
     ? {
         id: coachRoleId,
         allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+        type: 'role',
       }
     : coachUser && coachUser.id !== discordId
       ? {
           id: rawCoachId,
           allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+          type: 'member',
         }
       : null,
   {
     id: client.user.id,
     allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+    type: 'member',
   },
-].filter(Boolean); // 💡 Remove null entries
+].filter(Boolean);
+
 ;
 
       // Convert to valid bitfields
