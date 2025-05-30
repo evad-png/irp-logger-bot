@@ -24,6 +24,7 @@ const auth = new google.auth.GoogleAuth({
 });
 
 const spreadsheetId = process.env.SPREADSHEET_ID;
+console.log('📄 ENV Spreadsheet ID:', spreadsheetId);
 
 // 3. Load all bot logic
 require('./handlers/liteVerificationHandler')(client, auth, spreadsheetId);

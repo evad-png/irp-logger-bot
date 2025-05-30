@@ -39,6 +39,7 @@ module.exports = function startChannelCheckLoop(client, auth, spreadsheetId) {
       }
 
       const rawCoachId = coachMention?.replace(/[<@>]/g, '');
+      console.log(`🔍 rawCoachId extracted for ${tag}: ${rawCoachId}`);
       let coachUser;
 
       if (!isCommunityAccess && rawCoachId) {
