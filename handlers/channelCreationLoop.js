@@ -7,7 +7,7 @@ module.exports = function startChannelCheckLoop(client, auth, spreadsheetId) {
   const coachRoleId = '866700390338002944';
 
   setInterval(async () => {
-    console.log('🔄 Running 5-minute channel check...');
+    console.log('🔄 Running 1-minute channel check...');
 
     const guild = client.guilds.cache.first(); // Adjust if multi-guild
     if (!guild) return console.log('❌ Bot not in any guild');
@@ -32,7 +32,7 @@ module.exports = function startChannelCheckLoop(client, auth, spreadsheetId) {
       if (!discordId || !categoryId || channelCreated === '✅') continue;
 
       const baseName = discordTag?.toLowerCase();
-      const existing = guild.channels.cache.find(c => c.name.includes(baseName));
+      const existing = guild.channels.cache.find(c => c.name === `${baseName} - active`);
       if (existing) {
         console.log(`📛 Channel already exists for ${discordTag}`);
         continue;
@@ -56,40 +56,37 @@ module.exports = function startChannelCheckLoop(client, auth, spreadsheetId) {
         }
       }
 
-    const overwrites = [
-  {
-    id: guild.roles.everyone.id,
-    deny: [PermissionsBitField.Flags.ViewChannel],
-    type: 'role',
-  },
-  {
-    id: discordId,
-    allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
-    type: 'member',
-  },
-  isCommunityAccess
-    ? {
-        id: coachRoleId,
-        allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
-        type: 'role',
-      }
-    : coachUser && coachUser.id !== discordId
-      ? {
-          id: rawCoachId,
+      const overwrites = [
+        {
+          id: guild.roles.everyone.id,
+          deny: [PermissionsBitField.Flags.ViewChannel],
+          type: 'role',
+        },
+        {
+          id: discordId,
           allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
           type: 'member',
-        }
-      : null,
-  {
-    id: client.user.id,
-    allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
-    type: 'member',
-  },
-].filter(Boolean);
+        },
+        isCommunityAccess
+          ? {
+              id: coachRoleId,
+              allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+              type: 'role',
+            }
+          : coachUser && coachUser.id !== discordId
+            ? {
+                id: coachUser.id,
+                allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+                type: 'member',
+              }
+            : null,
+        {
+          id: client.user.id,
+          allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+          type: 'member',
+        },
+      ].filter(Boolean);
 
-;
-
-      // Convert to valid bitfields
       const formattedOverwrites = overwrites.map(overwrite => ({
         id: overwrite.id,
         allow: new PermissionsBitField(overwrite.allow ?? []).bitfield,
@@ -129,5 +126,5 @@ module.exports = function startChannelCheckLoop(client, auth, spreadsheetId) {
         console.error(`❌ Error creating channel for ${discordTag}:`, err.message);
       }
     }
-  }, 1 * 60 * 1000); // Run every 1 minute
+  }, 1 * 60 * 1000); // Every 1 minute
 };
