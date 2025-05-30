@@ -72,7 +72,7 @@ module.exports = function startChannelCheckLoop(client, auth, spreadsheetId) {
       }
     : coachUser && coachUser.id !== discordId
       ? {
-          id: coachUser.id,
+          id: rawCoachId,
           allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
         }
       : null,
