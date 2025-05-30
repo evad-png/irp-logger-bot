@@ -56,29 +56,32 @@ module.exports = function startChannelCheckLoop(client, auth, spreadsheetId) {
         }
       }
 
-      const rawOverwrites = [
-        {
-          id: guild.roles.everyone.id,
-          deny: [PermissionsBitField.Flags.ViewChannel],
-        },
-        {
-          id: discordId,
+    const overwrites = [
+  {
+    id: guild.roles.everyone.id,
+    deny: [PermissionsBitField.Flags.ViewChannel],
+  },
+  {
+    id: discordId,
+    allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+  },
+  isCommunityAccess
+    ? {
+        id: coachRoleId,
+        allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+      }
+    : coachUser && coachUser.id !== discordId
+      ? {
+          id: coachUser.id,
           allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
-        },
-        isCommunityAccess
-          ? {
-              id: coachRoleId,
-              allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
-            }
-          : {
-              id: coachUser?.id,
-              allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
-            },
-        {
-          id: client.user.id,
-          allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
-        },
-      ];
+        }
+      : null,
+  {
+    id: client.user.id,
+    allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+  },
+].filter(Boolean); // 💡 Remove null entries
+;
 
       // Convert to valid bitfields
       const formattedOverwrites = rawOverwrites.map(overwrite => ({
