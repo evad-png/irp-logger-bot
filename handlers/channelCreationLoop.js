@@ -45,7 +45,8 @@ module.exports = function startChannelCheckLoop(client, auth, spreadsheetId) {
 
       if (!isCommunityAccess && rawCoachId) {
         try {
-          coachUser = await guild.members.fetch(rawCoachId);
+          coachUser = await guild.members.fetch({ user: rawCoachId, force: true });
+
         } catch (err) {
           console.log(`⚠️ Could not fetch coach user for ${discordTag}: ${err.message}`);
         }
