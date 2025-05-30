@@ -84,7 +84,7 @@ module.exports = function startChannelCheckLoop(client, auth, spreadsheetId) {
 ;
 
       // Convert to valid bitfields
-      const formattedOverwrites = rawOverwrites.map(overwrite => ({
+      const formattedOverwrites = overwrites.map(overwrite => ({
         id: overwrite.id,
         allow: new PermissionsBitField(overwrite.allow ?? []).bitfield,
         deny: new PermissionsBitField(overwrite.deny ?? []).bitfield,
