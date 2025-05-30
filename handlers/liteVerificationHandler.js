@@ -2,8 +2,8 @@
 const { Events, PermissionsBitField } = require('discord.js');
 const { google } = require('googleapis');
 
-const verificationChannelId = 'YOUR_VERIFICATION_CHANNEL_ID'; // Replace this
-const coachRoleId = 'YOUR_COACH_ROLE_ID'; // Replace this
+const verificationChannelId = '1362523004155723857'; // Replace this
+const coachRoleId = '866700390338002944'; // Replace this
 
 module.exports = (client, auth, spreadsheetId) => {
   const sheets = google.sheets({ version: 'v4', auth });
