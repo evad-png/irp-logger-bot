@@ -1,7 +1,7 @@
 const { Events } = require('discord.js');
 
 module.exports = function moveInactiveChannels(client) {
-  const archiveCategoryId = '1378521355900948560'; // ✅ Replace with real archive category ID
+  const archiveCategoryId = '1378535952942633010'; // Replace with real archive category ID 
 
   const coachCategoryIds = [
     '1366422592537362573',
@@ -37,6 +37,6 @@ module.exports = function moveInactiveChannels(client) {
           }
         }
       }
-    }, 5 * 60 * 1000); // Run every 5 minutes for now
+    }, 24 * 60 * 60 * 1000); // Run every 24 hours
   }, 10 * 1000); // Wait 10s after startup just in case
 };
