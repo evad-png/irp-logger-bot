@@ -30,6 +30,10 @@ console.log('📄 ENV Spreadsheet ID:', spreadsheetId);
 require('./handlers/liteVerificationHandler')(client, auth, spreadsheetId);
 require('./handlers/attendanceHandler')(client, auth, spreadsheetId);
 require('./handlers/channelCreationLoop')(client, auth, spreadsheetId);
+const moveInactiveChannels = require('./handlers/moveInactiveChannels');
+moveInactiveChannels(client);
+
+
 
 // 4. Ready event
 client.once('ready', () => {
