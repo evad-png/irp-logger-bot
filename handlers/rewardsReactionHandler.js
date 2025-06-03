@@ -40,7 +40,8 @@ const discordId = user.id;
       range: `${TAB_NAME}!A:G`,
       valueInputOption: 'USER_ENTERED',
       requestBody: {
-        values: [[discordTag, discordId, '', '', timestamp, 'Yes']]
+        values: [[discordTag, discordId, '', '', timestamp, '', 'Yes']]
+
       }
     });
 
