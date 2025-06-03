@@ -71,7 +71,7 @@ module.exports = function startChannelCheckLoop(client, auth, spreadsheetId) {
         },
         {
           id: client.user.id,
-          allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+          allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.ManageChannels],
         },
       ];
 
