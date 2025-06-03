@@ -15,8 +15,9 @@ module.exports = async function rewardsReactionHandler(reaction, user, auth) {
     if (user.bot) return;
 
     const sheets = google.sheets({ version: 'v4', auth });
-    const discordTag = `${user.username}#${user.discriminator}`;
-    const discordId = user.id;
+    const discordTag = user.username;
+const discordId = user.id;
+
 
     // 1. Fetch existing rows
     const readRes = await sheets.spreadsheets.values.get({
@@ -36,7 +37,7 @@ module.exports = async function rewardsReactionHandler(reaction, user, auth) {
     const timestamp = new Date().toISOString();
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${TAB_NAME}!A:F`,
+      range: `${TAB_NAME}!A:G`,
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [[discordTag, discordId, '', '', timestamp, 'Yes']]
