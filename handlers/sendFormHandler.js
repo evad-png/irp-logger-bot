@@ -11,7 +11,8 @@ module.exports = function (client) {
     try {
       const testChannel = await client.channels.fetch(testChannelId);
 
-      const raffleMessage = `🎯 **Help Us Improve IRP Lite + Win Rewards!**
+      const raffleMessage = `<@&1336602017275052042>
+      🎯 **Help Us Improve IRP Lite + Win Rewards!**
 
 We’re always working to improve IRP Lite, and your honest feedback makes a significant difference.
 
