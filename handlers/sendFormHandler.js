@@ -6,13 +6,11 @@ module.exports = function (client) {
     if (message.author.bot || !message.guild) return;
     if (message.content.trim().toLowerCase() !== '!sendform') return;
 
-    const testChannelId = '1380577629580693514';
+    const guild = client.guilds.cache.first();
+    if (!guild) return message.reply('❌ Bot not in any guild');
 
-    try {
-      const testChannel = await client.channels.fetch(testChannelId);
-
-      const raffleMessage = `<@&1336602017275052042>
-      🎯 **Help Us Improve IRP Lite + Win Rewards!**
+    const raffleMessage = `<@&1336602017275052042>  
+🎯 **Help Us Improve IRP Lite + Win Rewards!**
 
 We’re always working to improve IRP Lite, and your honest feedback makes a significant difference.
 
@@ -36,11 +34,19 @@ Please answer honestly and thoughtfully. Submissions with fake or rushed answers
 
 💬 This takes less than 10 minutes. Be honest, we’re listening.`;
 
-      await testChannel.send(raffleMessage);
-      await message.reply(`✅ Sent the form message to #${testChannel.name}`);
-    } catch (err) {
-      console.error('❌ Failed to send test form message:', err.message);
-      await message.reply('❌ Failed to send test form message.');
+    let sentCount = 0;
+
+    for (const [channelId, channel] of guild.channels.cache) {
+      if (channel.type === 0 && channel.name.includes('active')) {
+        try {
+          await channel.send(raffleMessage);
+          sentCount++;
+        } catch (err) {
+          console.error(`❌ Failed to send in ${channel.name}:`, err.message);
+        }
+      }
     }
+
+    await message.reply(`✅ Sent the form to ${sentCount} student channels.`);
   });
 };
