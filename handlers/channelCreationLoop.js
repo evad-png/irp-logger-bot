@@ -104,19 +104,33 @@ This is your dedicated space to work directly with your coach — all communicat
 
 ---
 
-✅ Before Your Assessment Call:
+✅ Your Next Steps:
 
-🎯 Complete your Voltaic Benchmarks  
-🟢 Platinum or lower: https://forms.gle/oKnww1jr2GSUDiN67  
-🔵 Diamond or higher: https://forms.gle/W3JbvXiAJHDrPGGF8  
-📄 Instructions: https://docs.google.com/document/d/1hIImct8DrCWM9lgXZBXspNwSADcWfqT6_sxAn29nCs8/edit?usp=sharing
+1. 📅 Share Your Google Calendar
+**This is the most important step and required so you can schedule your first session.**
+▶️ How to Share Your Calendar (https://youtube.com/live/KtyKFddVhtw?feature=share)
+🔗 Share with: irp-bot-service-account@irp-calendar-bot.iam.gserviceaccount.com		
 
-📚 Catch up on past lessons: <#1341428516415213718>  
-🗓 Check the Lite calendar: <#1338991610221821953>  
-🙋 Introduce yourself to other Lite students: <#1340712926809555014>
+2. 🎥 Watch the Settings Optimization Guide
+Make sure your in-game and out-of-game settings are ready.
+▶️ Watch the Video (https://www.youtube.com/watch?v=sn2HsFUh-O4&ab_channel=HieuM)
 
-🖥️ What to do the day of your assessment meeting?  
-Join this channel: <#1336958676698923110> 5 minutes before your scheduled time and your coach will pull you into their coaching terminal!
+3. 🗓 Book Your Assessment
+Once Step 1 is complete, type /book in this channel and follow the prompts. **Remember you are booking the LITE ASSESSMENT with your Coach who was included in your welcome message.**
+
+4. 🖥️ Join the Right Channel On Time
+At your scheduled time, join this channel: <#1336958676698923110>
+Your coach will pull you into their coaching terminal.
+
+
+📚 Additional Resources:
+🗓 Weekly Schedule & Announcements: <#1338989598591811678>
+
+📖 Past Lessons Archive: <#1341428516415213718>
+
+📅 Group Events Calendar: <#1338991610221821953>
+
+👋 Introduce Yourself to other Lite Students: <#1340712926809555014>
 
 ---
 
