@@ -10,6 +10,7 @@ module.exports = function (client) {
     if (!guild) return message.reply('❌ Bot not in any guild');
 
     const updateMessage = `
+    <@1336602017275052042>
 👋 **Hey team! Here are this week’s important updates:**  
 
 📅 **The new calendar is out!**  
