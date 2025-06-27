@@ -91,13 +91,27 @@ Use this channel to:
 - Share clips or ask for feedback from our coaching team
 - Stay connected with the IRP community
 
-Remember, Community Access does **not** receive 1-on-1 coaching. All coaches can see your channel and will drop in to answer any questions.
+Remember, your package does **not** receive 1-on-1 coaching. All coaches can see your channel and will drop in to answer any questions.
 
-If you'd like to upgrade so you can receive 1-on-1 coaching please DM evaD.
+**Your package includes:**
+- Access to the Community
+- Weekly group events (Found here: <#1338991610221821953>)
+- IRP Video Archive (Found on the Whop)
+- The IRP League (Currently on a break)
 
-🗓 Check the calendar: <#1338991610221821953>
-📚 Watch lesson recordings: <#1341428516415213718>
+The Weekly group events are one of your most **valuable** resources, specifically the Sunday Scrims. We host **two** lobbies: one for higher ELO and one for lower ELO. This means you’ll be playing against people of a similar rank to you. You’ll have a coach assigned to your lobby, and they'll pause and provide feedback throughout the scrim. These are primarily hosted on NA servers, but may be hosted on EU servers depending on the student turnout. Hope to see you this weekend! 
+
+If you'd like to upgrade so you can receive 1-on-1 coaching please @ evaD in this channel.
+
+
+**📚 Additional Resources:**
+
+❗ Weekly announcements channel: <#1338989598591811678>
+✏️ Suggest a class you want: <#1383075134364975235>
+📚 Watch previous lesson recordings: <#1341428516415213718>
 💬 Say hi in the community chat: <#1340712926809555014>`
+
+
           : `🎉 Welcome <@${discordId}> to your private coaching channel with ${coachMention}!
 
 This is your dedicated space to work directly with your coach — all communication should happen here, **not through DMs**. Use this channel to ask questions, request feedback, share clips, and stay on track with your goals. Your coach will always respond in this space.
