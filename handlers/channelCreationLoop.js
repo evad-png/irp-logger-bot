@@ -138,6 +138,7 @@ Your coach will pull you into their coaching terminal.
 
 
 📚 Additional Resources:
+
 🗓 Weekly Schedule & Announcements: <#1338989598591811678>
 
 📖 Past Lessons Archive: <#1341428516415213718>
@@ -145,6 +146,15 @@ Your coach will pull you into their coaching terminal.
 📅 Group Events Calendar: <#1338991610221821953>
 
 👋 Introduce Yourself to other Lite Students: <#1340712926809555014>
+
+---
+
+📌 **Important: 1-on-1 Session Policy**
+Your **1-on-1 sessions expire at the end of each month**:
+- **Lite students:** Schedule a session **every other week**.
+- **Lite+ students:** Schedule a session **every week**.
+
+If you’re unsure which package you have, please ask your coach here.
 
 ---
 

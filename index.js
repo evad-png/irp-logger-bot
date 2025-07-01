@@ -33,6 +33,7 @@ require('./handlers/channelCreationLoop')(client, auth, spreadsheetId);
 require('./handlers/rewardsPostHandler')(client);
 require('./handlers/sendFormHandler')(client);
 require('./handlers/sendScrimUpdateHandler')(client);
+require('./handlers/exportRolesHandler')(client, auth);
 const moveInactiveChannels = require('./handlers/moveInactiveChannels');
 moveInactiveChannels(client);
 
