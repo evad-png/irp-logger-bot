@@ -9,7 +9,8 @@ module.exports = function startChannelCheckLoop(client, auth, spreadsheetId) {
   setInterval(async () => {
     console.log('🔄 Running 5-minute channel check...');
 
-    const guild = client.guilds.cache.first();
+    const guild = client.guilds.cache.get('862543387160215602');
+if (!guild) return console.log('❌ IRP Guild not found.');
     if (!guild) return console.log('❌ Bot not in any guild');
 
     const res = await sheets.spreadsheets.values.get({
