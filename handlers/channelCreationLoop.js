@@ -119,7 +119,7 @@ This is your dedicated space to work directly with your coach — all communicat
 
 ---
 
-✅ Your Next Steps:
+**✅ Your Next Steps:**
 
 1. 📅 Share Your Google Calendar
 **This is the most important step and required so you can schedule your first session.**
@@ -138,7 +138,7 @@ At your scheduled time, join this channel: <#1336958676698923110>
 Your coach will pull you into their coaching terminal.
 
 
-📚 Additional Resources:
+**📚 Additional Resources:**
 
 🗓 Weekly Schedule & Announcements: <#1338989598591811678>
 
@@ -151,6 +151,7 @@ Your coach will pull you into their coaching terminal.
 ---
 
 📌 **Important: 1-on-1 Session Policy**
+
 Your **1-on-1 sessions expire at the end of each month**:
 - **Lite students:** Schedule a session **every other week**.
 - **Lite+ students:** Schedule a session **every week**.
