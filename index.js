@@ -34,6 +34,7 @@ require('./handlers/rewardsPostHandler')(client);
 require('./handlers/sendFormHandler')(client);
 require('./handlers/sendScrimUpdateHandler')(client);
 require('./handlers/exportRolesHandler')(client, auth);
+require('./handlers/sendformtest')(client);
 const moveInactiveChannels = require('./handlers/moveInactiveChannels');
 moveInactiveChannels(client);
 
