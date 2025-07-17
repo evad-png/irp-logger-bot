@@ -1,7 +1,7 @@
 const { Events } = require('discord.js');
 
 module.exports = function moveInactiveChannels(client) {
-  const archiveCategoryId = '1378535952942633010'; // Replace with real archive category ID 
+  const archiveCategoryId = '1395431243734192188'; // Replace with real archive category ID 
 
   const coachCategoryIds = [
     '1366422592537362573',
