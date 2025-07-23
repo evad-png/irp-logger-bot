@@ -17,8 +17,13 @@ module.exports = function moveInactiveChannels(client) {
   setTimeout(async () => {
     console.log('⏳ Starting inactive channel check (after 2-minute delay)...');
 
-    const guild = client.guilds.cache.first();
-    if (!guild) return console.log('❌ Bot is not in any guild');
+   const guildId = '862543387160215602'; // 👈 replace with your actual server ID
+const guild = client.guilds.cache.get(guildId);
+if (!guild) {
+  console.log(`❌ Guild not found for ID ${guildId}`);
+  return;
+}
+
 
     const archiveCategory = guild.channels.cache.get(archiveCategoryId);
     if (!archiveCategory) return console.log('❌ Archive category not found!');
