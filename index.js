@@ -37,14 +37,12 @@ require('./handlers/exportRolesHandler')(client, auth);
 require('./handlers/sendformtest')(client);
 require('./handlers/sendformlive')(client);
 const moveInactiveChannels = require('./handlers/moveInactiveChannels');
-moveInactiveChannels(client);
 
-
-
-// 4. Ready event
 client.once('ready', () => {
   console.log(`🤖 Logged in as ${client.user.tag}`);
+  moveInactiveChannels(client); // ✅ Only run after bot is ready
 });
+
 
 console.log('🚀 Bot script started...');
 client.login(process.env.DISCORD_TOKEN);
