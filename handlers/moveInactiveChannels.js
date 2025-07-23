@@ -1,7 +1,8 @@
 const { Events, ChannelType } = require('discord.js');
 
 module.exports = function moveInactiveChannels(client) {
-  const archiveCategoryId = '1395431243734192188'; // New archive category ID
+  const archiveCategoryId = '1395431243734192188'; // Archive category ID
+  const guildId = '862543387160215602'; // IRP server ID
 
   const coachCategoryIds = [
     '1366422592537362573',
@@ -14,59 +15,37 @@ module.exports = function moveInactiveChannels(client) {
     '1339973506590576702',
   ];
 
-  setTimeout(async () => {
-    console.log('⏳ Starting inactive channel check (after 2-minute delay)...');
+  // Start after 10 seconds, then run every 24 hours
+  setTimeout(() => {
+    setInterval(async () => {
+      console.log('⏰ Running daily inactive channel check...');
 
-   const guildId = '862543387160215602'; // 👈 replace with your actual server ID
-const guild = client.guilds.cache.get(guildId);
-if (!guild) {
-  console.log(`❌ Guild not found for ID ${guildId}`);
-  return;
-}
+      const guild = client.guilds.cache.get(guildId);
+      if (!guild) return;
 
+      const archiveCategory = guild.channels.cache.get(archiveCategoryId);
+      if (!archiveCategory || archiveCategory.type !== ChannelType.GuildCategory) return;
 
-    const archiveCategory = guild.channels.cache.get(archiveCategoryId);
-    if (!archiveCategory) return console.log('❌ Archive category not found!');
-    if (archiveCategory.type !== ChannelType.GuildCategory) {
-      return console.log(`❌ Archive category type is not valid (found type: ${archiveCategory.type})`);
-    }
+      for (const categoryId of coachCategoryIds) {
+        const category = guild.channels.cache.get(categoryId);
+        if (!category || category.type !== ChannelType.GuildCategory) continue;
 
-    console.log(`📁 Archive category found: ${archiveCategory.name} (${archiveCategory.id})`);
+        const children = guild.channels.cache.filter(
+          c => c.parentId === categoryId && (c.type === ChannelType.GuildText || c.type === ChannelType.GuildVoice)
+        );
 
-    for (const categoryId of coachCategoryIds) {
-      const category = guild.channels.cache.get(categoryId);
-      if (!category) {
-        console.log(`⚠️ Coach category not found: ${categoryId}`);
-        continue;
-      }
-      if (category.type !== ChannelType.GuildCategory) {
-        console.log(`⚠️ Skipping non-category channel: ${category.name} (${category.id})`);
-        continue;
-      }
-
-      console.log(`🔍 Scanning category: ${category.name} (${category.id})`);
-
-      const children = guild.channels.cache.filter(
-        c => c.parentId === categoryId && (c.type === ChannelType.GuildText || c.type === ChannelType.GuildVoice)
-      );
-
-      for (const channel of children.values()) {
-        console.log(`➡️ Checking channel: ${channel.name} (${channel.id})`);
-
-        if (channel.name.toLowerCase().includes('inactive')) {
-          console.log(`📦 Attempting to move inactive channel: ${channel.name}`);
-
-          try {
-            await channel.setParent(archiveCategoryId, { lockPermissions: false });
-            console.log(`✅ Successfully moved ${channel.name} to archive category`);
-          } catch (err) {
-            console.error(`❌ Failed to move ${channel.name}:`, err.message);
+        for (const channel of children.values()) {
+          if (channel.name.toLowerCase().includes('inactive')) {
+            try {
+              await channel.setParent(archiveCategoryId, { lockPermissions: false });
+            } catch (err) {
+              // Silently ignore move failures
+            }
           }
         }
       }
-    }
 
-    console.log('✅ Inactive channel check complete.');
-
-  }, 2 * 60 * 1000); // Run after 2 minutes
+      console.log('✅ Inactive channel check complete.');
+    }, 24 * 60 * 60 * 1000); // Every 24 hours
+  }, 10 * 1000); // Initial delay after bot starts (10 seconds)
 };
